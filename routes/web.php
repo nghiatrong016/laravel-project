@@ -18,13 +18,16 @@ use App\Http\Controllers\CveController;
 Route::get('/', function () {
     return view('welcome');
 });
-// Route::get('/cve', function () {
-//     // This command will attempt to run `cmd.exe` in the current directory if present
-//     $process = new Process(['echo', 'Hello, world']);
-//     $process->run();
+Route::get('/env', function (Request $request) {
 
-//     // Output the result of the command
-//     return $process->getOutput();
-// });
-
-//Route::get('/cve', [CveController::class, 'runCommand']);
+    if (App::environment('staging')) {
+        Config::set('app.debug', true); // Turn on debug mode
+        return response()->json([
+            'test' => phpinfo(),
+            'environment' => App::environment(),
+            'debug_mode' => config('app.debug'),
+        ]);
+    } else {
+        dd(App::environment());
+    }
+});
